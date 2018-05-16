@@ -1,0 +1,19 @@
+import RPi.GPIO as GPIO
+
+print("hello world")
+#はじめて書いたコード
+
+
+print(4649)
+print("おねがいします☆")
+
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
+
+GPIO.setup(17, GPIO.OUT)
+
+GPIO.output(17, GPIO.HIGH) #電球が光る
+GPIO.output(17, GPIO.LOW) #電球が落ちる
+
+

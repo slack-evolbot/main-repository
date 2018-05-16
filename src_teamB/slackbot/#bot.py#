@@ -1,0 +1,4 @@
+from slackbot.bot import Bot
+
+# SlackBot起動
+print("start sla
