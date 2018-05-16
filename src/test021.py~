@@ -1,9 +1,0 @@
-import requests, json
-
-WEB_HOOK_URL = "https://hooks.slack.com/services/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"
-requests.post(WEB_HOOK_URL, data = json.dumps({
-    'text': u'Notifycation From Python.',
-    'username': u'Bakira-Tech-Python-Bot',
-    'icon_emoji': u':smile_cat:',
-    'link_names': 1,
-}))

@@ -1,9 +1,0 @@
-# -*- coding: utf-8 -*-
-API_TOKEN = 'xoxb-349898201620-rxuASXsxMNUjsyxHUZ0C72l7'
-
-# デフォルトの返答
-DEFAULT_REPLY = 'すみません、よくわかりません。Sorry'
-
-# プラグインを記述するパッケージ名のリスト
-#PLUGINS = ['SlackBotPlugin']
-PLUGINS = ['plugins']

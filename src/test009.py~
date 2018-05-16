@@ -1,3 +1,0 @@
-import slackweb
-slack = slackweb.Slack(url="https://hooks.slack.com/services/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")
-slack.notify(text="Hello World!")

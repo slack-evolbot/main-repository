@@ -1,6 +1,0 @@
-﻿from slackbot.bot import Bot
-
-# SlackBot起動
-print("start slackbot")
-paspi_doorlock_bot = Bot()
-paspi_doorlock_bot.run()
