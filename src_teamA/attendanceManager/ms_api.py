@@ -9,7 +9,7 @@ MS_API_BASE_URL = "https://eastasia.api.cognitive.microsoft.com/face/v1.0/" #API
 MS_API_GROUP_URL = MS_API_BASE_URL + "persongroups/"
 MS_API_DETECT_URL = MS_API_BASE_URL + "detect"
 MS_API_IDENTIFY_URL = MS_API_BASE_URL + "identify"
-KEY = "f3caf7d169024ba6a2f4fb950fda1e5b" ###Key1の値を設定
+KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" #MS Face APIの値を設定
 
 class Candidate:
     personId = None
