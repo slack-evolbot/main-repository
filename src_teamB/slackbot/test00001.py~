@@ -1,0 +1,5 @@
+import sys
+sys.path.append("/home/pi/teamB/")
+import disp_test01
+
+disp_test01.print_disp("1","2")
