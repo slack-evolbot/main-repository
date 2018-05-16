@@ -1,0 +1,57 @@
+import lirc
+import time
+import subprocess
+
+#Initialize lirc
+sockid = lirc.init("test05", blocking = False)
+
+#Kill irexec
+cmd = 'pkill -9 "irexec"'
+subprocess.call(cmd, shell=True)
+
+def change_channel():
+        f = open("ch.txt", 'w'
+            f.write(str(n))
+                f.close
+                    cmd0 = 'pkill -9 "omxplayer"'
+                        subprocess.call(cmd0, shell=True)
+                            cmd1 = 'pkill -9 "recdvb"'
+                                subprocess.call(cmd1, shell=True)
+                                    cmd2 = 'rm /tmp/mpegpipe'
+                                        subprocess.call(cmd2, shell=True)
+                                            cmd3 = '[ -p /tmp/mpegpipe ] || mkfifo /tmp/mpegpipe'
+                                                subprocess.call(cmd3, shell=True)
+                                                    cmd4 = 'recdvb --b25 --strip ' + ch[n] + ' - /tmp/mpegpipe &'
+                                                        subprocess.call(cmd4, shell=True)
+                                                            cmd5 = 'omxplayer --live /tmp/mpegpipe'
+                                                                subprocess.Popen(cmd5, shell=True)
+
+                                                                def exit_script():
+                                                                        keyCombo("q")
+                                                                            cmd1 = 'pkill -9 "recdvb"'
+                                                                                subprocess.call(cmd1, shell=True)
+                                                                                    cmd2 = 'rm /tmp/mpegpipe'
+                                                                                        subprocess.call(cmd2, shell=True)
+                                                                                            cmd6 = 'irexec /home/pi/.lircrc' #Reboot irexec
+                                                                                                subprocess.call(cmd6, shell=True)
+                                                                                                    sys.exit()
+
+                                                                                                    #Auto start the first channel
+                                                                                                    change_channel()
+
+try:
+    while True:
+        codeIR = lirc.nextcode()
+
+        print(codeIR !=[])
+        
+        if(codeIR !=[]):
+            codeIR = lirc.nextcode()
+            print("BUTTON_ID"+codeIR[0])
+
+        else: 
+            time.sleep(3)
+
+except KeyboardInterrupt:
+    pass
+
