@@ -21,10 +21,10 @@ pygame.mixer.init()
 
 #LINE
 LINE_POST_URL = "https://api.line.me/v2/bot/message/push"
-LINE_POST_ID = "Uacfc50da8bb896a9be0035f75531dac1"
+LINE_POST_ID = "XXXXXXXXXXXXXXXXXXXXXXXXXX"
 LINE_POST_TYPE_TEXT = "text"
 LINE_POST_TYPE_STAMP = "sticker"
-ACCESS_TOKEN = "bMSdJhXAhnNZssru/uBNuWYP/19STcZ7+Vb/XJd+DnpWNu5csAqyEF4pOdh8XHVgdYf6cC6wCmm2pLRTqWJj6Uf5jmf6eZgjH8BsoQUq6HJR4vx4uBws8qWn7GwXaSjWTxzkXZy/zKY2fmYisZ6RLgdB04t89/1O/w1cDnyilFU="
+ACCESS_TOKEN = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 headers = {
     "Content-Type" : "application/json", 
     "Authorization" : "Bearer "+ ACCESS_TOKEN

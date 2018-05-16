@@ -5,7 +5,7 @@ import new_sensor
 import threading
 
 #MQTT define
-TOKEN = "token_pEuhRkO1Nnb6Zb6k"
+TOKEN = "XXXXXXXXXXXXXXXXXX"
 HOSTNAME = "mqtt.beebotte.com"
 PORT = 8883
 TOPIC = "pichannel/action"

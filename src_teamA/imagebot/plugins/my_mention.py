@@ -22,7 +22,8 @@ def img(message, params):
         if(flag not in ["jpg","jpeg","png","gif"]):
             return
 
-        token = 'xoxb-360090495013-8npN9mSma8EjIP3XuxRuuH7U'
+        #Slackbotのトークン
+        token = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
         rst = requests.get(url, headers={'Authorization': 'Bearer %s' % token}, stream=True)
 
         fo = open(tmpfile, "wb")

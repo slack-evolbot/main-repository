@@ -2,7 +2,7 @@
 構築手順は手順書を参照。
 
 以下を変更の上利用すること。
-my_mention.py
+plugins/my_mention.py
 ・token
 
 slackbot_settings.py
