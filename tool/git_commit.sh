@@ -3,7 +3,7 @@ LOG=/home/pi/log/commit.log
 PASS='pwd'
 cd /home/pi/git/main-repository >> $LOG
 git add * >> $LOG
-if [$# -ne 1]; then
+if [$# -ne 2]; then
     git commit -a -m $1 >> $git
 else
     git commit -a -m "シェルファイルによるコミット" >> $LOG
