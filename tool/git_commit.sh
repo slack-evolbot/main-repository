@@ -1,10 +1,10 @@
 #!/bin/sh
 LOG=/home/pi/log/commit.log
-PASS='pwd'
+PASS=`pwd`
 cd /home/pi/git/main-repository >> $LOG
 git add * >> $LOG
-if [ $# -ne 1 ]; then
-    git commit -a -m $1 >> $git
+if [ $# -eq 1 ]; then
+    git commit -a -m $1 >> $LOG
 else
     git commit -a -m "シェルファイルによるコミット" >> $LOG
 fi
