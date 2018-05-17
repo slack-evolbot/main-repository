@@ -135,8 +135,7 @@ def resp_lunch(message, *something):
         
     try:
         with connection.cursor() as cursor:
-
-            pattern = r"おすすめ"
+            pattern = r".*おすすめ.*"
             repatter = re.compile(pattern)
 
             if repatter.match(message.body['text']):
@@ -162,14 +161,28 @@ def resp_lunch(message, *something):
                     shop_name = result[0][0]
                     special = result[0][1]
             else:
-                sql = "SELECT SHOP_NAME, DETAIL FROM RECOMMENDED_LUNCH_TABLE WHERE RANK >= 5;"            
-                cursor.execute(sql)
-                result = cursor.fetchall()
-                cursor.close()
+                pattern = r".*チャレンジ.*"
+                repatter = re.compile(pattern)
 
-                ran = random.randint(0, len(result)-1)
-                shop_name = result[ran][0]
-                special = result[ran][1]
+                if repatter.match(message.body['text']):
+                    sql = "SELECT SHOP_NAME, DETAIL FROM RECOMMENDED_LUNCH_TABLE WHERE RANK = -1;"            
+                    cursor.execute(sql)
+                    result = cursor.fetchall()
+                    cursor.close()
+
+                    ran = random.randint(0, len(result)-1)
+                    shop_name = result[ran][0]
+                    special = result[ran][1]
+
+                else:
+                    sql = "SELECT SHOP_NAME, DETAIL FROM RECOMMENDED_LUNCH_TABLE WHERE RANK >= 5;"            
+                    cursor.execute(sql)
+                    result = cursor.fetchall()
+                    cursor.close()
+
+                    ran = random.randint(0, len(result)-1)
+                    shop_name = result[ran][0]
+                    special = result[ran][1]
 
             gmaps = googlemaps.Client(key=google_map_key)
 
@@ -179,10 +192,9 @@ def resp_lunch(message, *something):
             message.send(shop_name + "は" + special)
             
             message.send(shop_name + "まで" + re.sub(" ", "", directions_result[0]['legs'][0]['distance']['text']) + "(" + directions_result[0]['legs'][0]['duration']['text'] + ")")
-
             #create_map_image(shop_name)
-            lat = str(directions_result[0]['bounds']['northeast']['lat'])
-            lng = str(directions_result[0]['bounds']['northeast']['lng'])
+            lat = str(directions_result[0]['legs'][0]['end_location']['lat'])
+            lng = str(directions_result[0]['legs'][0]['end_location']['lng'])
             #url = "http://maps.google.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=18&size=640x480&markers=" + lat + "%2C" + lng + "&sensor=false&key=" + google_map_key;
             url="https://maps.googleapis.com/maps/api/staticmap?path=weight%3A10%7Ccolor%3Ared"
 
