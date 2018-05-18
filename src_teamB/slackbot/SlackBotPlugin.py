@@ -207,11 +207,10 @@ def resp_lunch(message, *something):
 
             url += "%7C" + lat + "%2C" + lng + "&markers=" + lat + "%2C" + lng + "&size=640x480&key=" + google_map_key
 
-            download_pic(url, shop_name)
-
-            shutil.copy("/home/pi/teamB/map/" + str(shop_name) + ".png", "/home/pi/teamB/map/upload_file.png")
-            slacker.files.upload("/home/pi/teamB/map/upload_file.png" , filename="upload_file.png", channels=message.body['channel'])
-            os.remove("/home/pi/teamB/map/upload_file.png")
+            download_pic(url)
+                
+            slacker.files.upload("../map/upload.png" , filename="upload.png", channels=message.body['channel'])
+            os.remove("../map/upload.png")
 
     except Exception as e:
         print("{0}".format(e))
@@ -227,9 +226,9 @@ def resp_beta(message, *something):
     message.send(chat_message)
     subprocess.call('/home/pi/aquestalkpi/AquesTalkPi "' + chat_message + '" | aplay', shell=True)
 
-def download_pic(url,filename):
+def download_pic(url):
     img = urllib.request.urlopen(url)
-    localfile = open( "/home/pi/teamB/map/" + str(filename) + ".png" , 'wb')
+    localfile = open( "../map/upload.png" , 'wb')
     localfile.write(img.read())
     img.close()
     localfile.close()
