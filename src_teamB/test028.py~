@@ -1,0 +1,31 @@
+import RPi.GPIO as GPIO
+from time import sleep
+import sys
+
+# ポート番号
+SOUND_PORT = 18
+# 周波数
+TONE = 440
+
+# GPIOの設定
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(SOUND_PORT, GPIO.OUT)
+
+# PWMを使う準備
+pwm = GPIO.PWM(SOUND_PORT, TONE)
+
+while True:
+    try:
+        # 周波数を設定
+        pwm.ChangerFrequency(TONE)
+        # デューティー比50%で再生
+        pwm.start(50)
+        sleep(0.5)
+        # 停止
+        pwm.stop()
+        sleep(0.5)
+    except KeyboardInterrupt:
+        break
+
+GPIO.clearnup()
+sys.exit()
