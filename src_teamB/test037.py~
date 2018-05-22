@@ -1,0 +1,8 @@
+import MeCab
+
+text = "私は川上です"
+mc = MeCab.Tagger()
+
+word_list = mc.parse(text).split('\n')
+
+print(word_list)

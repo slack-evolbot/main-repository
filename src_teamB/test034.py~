@@ -1,0 +1,19 @@
+# coding: utf-8
+import sys
+import MeCab
+
+doc = "すもももももももものうち"
+mc = MeCab.Tagger("-Ochasen")
+#mecab_mes = mecab.parse("すもももももももものうち")
+#print(mecab_mes)
+
+words = []
+while result:
+#        word = result.surface.decode("utf-8", "ignore")
+    word = result
+#        clazz = result.feature.split(',')[0].decode('utf-8', 'ignore')
+    clazz = result.split(',')[0]
+    if clazz != u'BOS/EOS':
+        word_class.append((word, clazz))
+        result = result.next
+        print(word_class)
