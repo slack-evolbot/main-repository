@@ -15,7 +15,7 @@ QUERY_STRING = '?stype=exact&ei=UTF-8&p=%s'
 
 
 def lookup(word, yomi=None, using=None):
-    """Yahoo!«‘‚ÅŒ¾—t‚ğ’²‚×‚é"""
+    """Yahoo!è¾æ›¸ã§è¨€è‘‰ã‚’èª¿ã¹ã‚‹"""
     
     if using is None: using = ('JJ', 'seiji', 'singo')
     
@@ -51,11 +51,11 @@ def lookup(word, yomi=None, using=None):
 def pp(results):
     lines = []
     for r in results:
-        lines.append( u'«‘‚Ìí—Ş: %s' % r.type  )
-        lines.append( u'Œ©o‚µŒê  : %s' % r.lemma )
+        lines.append( u'è¾æ›¸ã®ç¨®é¡: %s' % r.type  )
+        lines.append( u'è¦‹å‡ºã—èª  : %s' % r.lemma )
         
         if r.opts:
-            lines.append( u'‚»‚Ì‘¼‚Ìî•ñ:' )
+            lines.append( u'ãã®ä»–ã®æƒ…å ±:' )
             for k, v in r.opts.iteritems():
                 if not v: continue
                 lines.append( u'  %s: %s' % (k, v) )
@@ -74,16 +74,16 @@ def pp(results):
 
 
 
-# ’·‚­‚È‚é‚Ì‚ÅŠe«‘—p‚Ì‰ğÍŠí‚Í‚±‚Ì‰º‚É‘‚­
+# é•·ããªã‚‹ã®ã§å„è¾æ›¸ç”¨ã®è§£æå™¨ã¯ã“ã®ä¸‹ã«æ›¸ã
 
 def _dict_parse_for_YahooDictionary_JJ(elem):
-    """‘Œê«“T—p‚Ì‰ğÍŠí"""
+    """å›½èªè¾å…¸ç”¨ã®è§£æå™¨"""
     
-    # Œ©o‚µ‚Æ‚Ó‚è‚ª‚È‚ğæ“¾‚·‚é
-    m = re.search(ur'(.+?)y(.+?)z', elem.h3.a.text)
+    # è¦‹å‡ºã—ã¨ãµã‚ŠãŒãªã‚’å–å¾—ã™ã‚‹
+    m = re.search(ur'(.+?)ã€(.+?)ã€‘', elem.h3.a.text)
     if m:
         lemma = m.group(2)
-        yomi  = m.group(1).replace(u']', '')
+        yomi  = m.group(1).replace(u'â€', '')
     else:
         lemma = elem.h3.a.text
         yomi  = None
@@ -115,12 +115,12 @@ def _dict_parse_for_YahooDictionary_JJ(elem):
                         continue
                     
                     sub_idx = -1
-                    if gaiji_idx == 1676: sub_idx = 1 # ‚Ü‚é‚P
-                    if gaiji_idx == 1678: sub_idx = 2 # ‚Ü‚é‚Q
-                    if gaiji_idx == 2513: sub_idx = 3 # ‚Ü‚é‚R
-                    if gaiji_idx == 2531: sub_idx = 1 # ”’lŠp‚P
-                    if gaiji_idx == 2539: sub_idx = 1 # •lŠp‚P
-                    if gaiji_idx == 2540: pass        # •lŠp‚Q
+                    if gaiji_idx == 1676: sub_idx = 1 # ã¾ã‚‹ï¼‘
+                    if gaiji_idx == 1678: sub_idx = 2 # ã¾ã‚‹ï¼’
+                    if gaiji_idx == 2513: sub_idx = 3 # ã¾ã‚‹ï¼“
+                    if gaiji_idx == 2531: sub_idx = 1 # ç™½å››è§’ï¼‘
+                    if gaiji_idx == 2539: sub_idx = 1 # é»’å››è§’ï¼‘
+                    if gaiji_idx == 2540: pass        # é»’å››è§’ï¼’
                     
             elif x.name == 'b':
                 i = ord(x.text[0]) -  0xff10
@@ -134,41 +134,41 @@ def _dict_parse_for_YahooDictionary_JJ(elem):
     
     
     
-    # Še’è‹`‚ÉŠÜ‚Ü‚ê‚é•›Ÿ“I‚Èî•ñ‚ğ”²‚«o‚·
-    # •iŒî•ñA—p—áA‘Î‹`ŒêAƒŠƒ“ƒN‚È‚Ç
+    # å„å®šç¾©ã«å«ã¾ã‚Œã‚‹å‰¯æ¬¡çš„ãªæƒ…å ±ã‚’æŠœãå‡ºã™
+    # å“è©æƒ…å ±ã€ç”¨ä¾‹ã€å¯¾ç¾©èªã€ãƒªãƒ³ã‚¯ãªã©
     hinshi = None
     defin  = [ ]
     for x in cands:
         text = x.defin
         
-        m = re.match(ur'm\D+?n(\(ƒXƒ‹\))?', text)
+        m = re.match(ur'ï¼»\D+?ï¼½(\(ã‚¹ãƒ«\))?', text)
         if m:
             hinshi = m.group(0)
             text = text.replace(hinshi, '')
             
-        hint = re.search(ur's.+?t', text)
+        hint = re.search(ur'ã€Š.+?ã€‹', text)
         if hint:
             hint = hint.group(0)
             text = text.replace(hint, '')
         hint = None
-        yourei = re.findall(ur'(u(?:[^v]*?)?(?:[^u]*?)v)', text)
+        yourei = re.findall(ur'(ã€Œ(?:[^ã€]*?)?(?:[^ã€Œ]*?)ã€)', text)
         for i in yourei: text = text.replace(i, '')
         
         taigigo = None
-        if u'Ì' in text:
-            taigigo = text[text.rindex(u'Ì')+1:]
-            if taigigo.endswith(u'B'): taigigo = taigigo[:-1]
-            text = text[:text.rindex(u'Ì')]
+        if u'â‡”' in text:
+            taigigo = text[text.rindex(u'â‡”')+1:]
+            if taigigo.endswith(u'ã€‚'): taigigo = taigigo[:-1]
+            text = text[:text.rindex(u'â‡”')]
             
         link = None
-        if u'Ë' in text:
-            link = text[text.rindex(u'Ë')+1:]
-            if link.endswith(u'B'): link = link[:-1]
-            text = text[:text.rindex(u'Ë')]
-        elif u'¨' in text:
-            link = text[text.rindex(u'¨')+1:]
-            if link.endswith(u'B'): link = link[:-1]
-            text = text[:text.rindex(u'¨')]
+        if u'â‡’' in text:
+            link = text[text.rindex(u'â‡’')+1:]
+            if link.endswith(u'ã€‚'): link = link[:-1]
+            text = text[:text.rindex(u'â‡’')]
+        elif u'â†’' in text:
+            link = text[text.rindex(u'â†’')+1:]
+            if link.endswith(u'ã€‚'): link = link[:-1]
+            text = text[:text.rindex(u'â†’')]
         
         if text or hint or yourei or taigigo or link:
             defin_opts = dict(hint=hint, yourei=yourei, taigigo=taigigo, link=link)
@@ -180,14 +180,14 @@ def _dict_parse_for_YahooDictionary_JJ(elem):
 
 
 def _dict_parse_for_YahooDictionary_seiji(elem):
-    """­¡—pŒêW‚Ì‰ğÍŠí"""
+    """æ”¿æ²»ç”¨èªé›†ã®è§£æå™¨"""
     lemma = elem.h3.a.text
     defin = [ DictDefin( (0, 0), elem.div.text, {}) ]
     return DictResult('seiji', lemma, defin, {})
 
 
 def _dict_parse_for_YahooDictionary_singo(elem):
-    """VŒê’TŒŸ‚Ì‰ğÍŠí"""
+    """æ–°èªæ¢æ¤œã®è§£æå™¨"""
     lemma = elem.h3.a.text
     defin = [ DictDefin( (0, 0), elem.div.text, {}) ]
     return DictResult('singo', lemma, defin, {})
