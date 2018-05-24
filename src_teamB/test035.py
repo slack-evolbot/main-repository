@@ -76,5 +76,5 @@ def main(search_word):
         word_data = list(set(word_data))
         return word_data
     
-result = main('放火')
-print(result)
+#result = main('放火')
+#print(result)

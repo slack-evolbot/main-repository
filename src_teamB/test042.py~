@@ -1,0 +1,7 @@
+text = "abcdef"
+
+print(text)
+
+text = text.replace('d', 'm')
+
+print(text)
