@@ -26,6 +26,7 @@ GPIO.setup(SOUND_PORT, GPIO.OUT)
 pwm = GPIO.PWM(SOUND_PORT, 440)
 
 try:
+    
     for mel in MELODY:
         # 周波数を設定
         pwm.ChangeFrequency(TONES[mel])
