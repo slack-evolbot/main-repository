@@ -32,6 +32,9 @@ class TEMP_DATA():
     context_info = 'DUMMY'
     mode_info = 'dialog'
 
+class NO_SHOP(Exception):
+    pass
+    
 @listen_to(u'(おはようございます|しりとりしよう)')
 @respond_to(u'(おはようございます|しりとりしよう)')
 def resp_aplha(message, *something):
@@ -170,6 +173,9 @@ def resp_lunch(message, *something):
                     result = cursor.fetchall()
                     cursor.close()
 
+                    if len(result) == 0:
+                        raise NO_SHOP
+                        
                     ran = random.randint(0, len(result)-1)
                     shop_name = result[ran][0]
                     special = result[ran][1]
@@ -183,7 +189,7 @@ def resp_lunch(message, *something):
                     ran = random.randint(0, len(result)-1)
                     shop_name = result[ran][0]
                     special = result[ran][1]
-
+                    
             gmaps = googlemaps.Client(key=google_map_key)
 
             directions_result = gmaps.directions(now_place, "新宿 " + shop_name, mode="walking", alternatives=False, language="ja")
@@ -212,6 +218,9 @@ def resp_lunch(message, *something):
             slacker.files.upload("../map/upload.png" , filename="upload.png", channels=message.body['channel'])
             os.remove("../map/upload.png")
 
+    except NO_SHOP:
+        message.send("新しいお店は見つかりませんでした")
+    
     except Exception as e:
         print("{0}".format(e))
     

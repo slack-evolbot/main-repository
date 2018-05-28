@@ -1,0 +1,19 @@
+import disp_test01
+from time import sleep
+import subprocess
+
+#disp_test01.print_disp("1", "2")
+#sleep(10)
+
+
+#response = subprocess.check_output("traceroute 8.8.8.8", universal_newlines=True, shell=True)
+
+#for resp in str(response).split("\n"):
+#    print(resp)
+
+
+
+response1 = subprocess.check_call("ping -c 1 8.8.8.8".split())
+#response1 = subprocess.check_call("ls")
+
+print(response1)

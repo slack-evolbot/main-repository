@@ -1,0 +1,42 @@
+import RPi.GPIO as GPIO
+from time import sleep
+import sys
+
+# ポート番号
+SOUND_PORT = 17
+# 周波数
+TONES = {
+    'ド': 523,
+    'レ': 587,
+    'ミ': 659,
+    'ファ': 698,
+    'ソ': 783,
+    'ラ': 880,
+    'シ': 987,
+}
+
+# メロディー
+MELODY = ['ド', 'レ', 'ミ', 'ファ', 'ミ', 'レ', 'ド',
+          'ミ', 'ファ', 'ソ', 'ラ', 'ソ', 'ファ', 'ミ']
+
+# GPIOの設定
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(SOUND_PORT, GPIO.OUT)
+# PWMを使う準備
+pwm = GPIO.PWM(SOUND_PORT, 440)
+
+try:
+    for mel in MELODY:
+        # 周波数を設定
+        pwm.ChangeFrequency(TONES[mel])
+        # デューティー比50%で再生
+        pwm.start(50)
+        sleep(0.5)
+        # 停止
+        pwm.stop()
+        sleep(0.1)
+except KeyboardInterrupt:
+    pass
+
+GPIO.clearnup()
+sys.exit()
