@@ -3,6 +3,10 @@ import RPi.GPIO as GPIO
 from time import sleep
 import MySQLdb
 from datetime import datetime
+import display
+
+#ディスプレイ表示用
+disp = display.Display()
 
 #グループ毎のIDとGPIO
 GROUP_ID_A = "A"
@@ -16,10 +20,11 @@ GPIO_D = 22
 GPIO_START = 26
 
 #ボタンステータス
-STATUS_NORMAL = 0 #通常状態
-STATUS_INPUT_SCORE = 1 #スコア入力待ち
-STATUS_INPUT_CANCEL = 2 #キャンセル入力待ち
-status = STATUS_NORMAL
+STATUS_WAITING = 0 #入力なし状態
+STATUS_NORMAL = 1 #通常状態
+STATUS_INPUT_SCORE = 2 #スコア入力中
+STATUS_INPUT_RESET = 3 #リセット入力中
+status = STATUS_WAITING
 
 #グループ情報格納用クラス
 class Group():
@@ -93,6 +98,14 @@ def score_up(group_id, connector):
     
     #一応履歴も残す
     insert_score_history_by_group_id(group_id, connector)
+    return score
+
+def show_score(groups):
+    display_message1 = " " + groups[0].group_name + "   " + groups[1].group_name + "   " + groups[2].group_name + "   " + groups[3].group_name
+    display_message2 = '{0:03d}'.format(groups[0].score) + " " + '{0:03d}'.format(groups[1].score) + " " + '{0:03d}'.format(groups[2].score) + " " + '{0:03d}'.format(groups[3].score)
+    print(display_message1)
+    print(display_message2)
+    disp.lcd_string1and2(display_message1, display_message2)
 
 #ボタン押下時のコールバック
 def my_callback(channel):
@@ -100,52 +113,64 @@ def my_callback(channel):
     connector = MySQLdb.connect(host="localhost", db="raspberry", user="pi", passwd="k-evolva", charset="utf8")
     global status
     
-    #キャンセル待ちの場合
-    if status == STATUS_INPUT_CANCEL:
+    if status == STATUS_WAITING:
+        print(channel)
+        #最初はどのボタンを押されても点数表示
+        groups = get_score_all(connector)
+        show_score(groups)
+        status = STATUS_NORMAL
+    elif status == STATUS_INPUT_RESET:
+         #リセット待ちの場合
         if channel == GPIO_A:
             reset_score(connector)
             connector.commit()
+            disp.lcd_string1("Reset Complete!!")
             print("リセットしました")
-        elif channel == GPIO_START:
-            groups = get_score_all(connector)
-            for group in groups:
-              print(group.group_name + ":" + str(group.score))
         else:
+            disp.lcd_string1("Calceled")
             print("キャンセルしました")
-        connector.close()
-        #A以外ならキャンセル
+        sleep(2)
         status = STATUS_NORMAL
-        return
-    
-    #入力待ちの場合
-    if status == STATUS_INPUT_SCORE:
+        groups = get_score_all(connector)
+        show_score(groups)
+    elif status == STATUS_INPUT_SCORE:
+        #入力待ちの場合
         if channel == GPIO_A:
-            score_up(GROUP_ID_A, connector)
+            score = score_up(GROUP_ID_A, connector)
+            connector.commit()
+            disp.lcd_string1and2(GROUP_ID_A + " Selected!!", "Score: " + '{0:03d}'.format(score))
         elif channel == GPIO_B:
-            score_up(GROUP_ID_B, connector)
+            score = score_up(GROUP_ID_B, connector)
+            connector.commit()
+            disp.lcd_string1and2(GROUP_ID_B + " Selected!!", "Score: " + '{0:03d}'.format(score))
         elif channel == GPIO_C:
-            score_up(GROUP_ID_C, connector)
+            score = score_up(GROUP_ID_C, connector)
+            connector.commit()
+            disp.lcd_string1and2(GROUP_ID_C + " Selected!!", "Score: " + '{0:03d}'.format(score))
         elif channel == GPIO_D:
-            score_up(GROUP_ID_D, connector)
+            score = score_up(GROUP_ID_D, connector)
+            connector.commit()
+            disp.lcd_string1and2(GROUP_ID_D + " Selected!!", "Score: " + '{0:03d}'.format(score))
         else:
-            print("リセット：A キャンセル：B 確認：M")
-            status = STATUS_INPUT_CANCEL
+            disp.lcd_string1and2("Reset : A", "Cancel: Others")
+            print("リセット：A キャンセル")
+            status = STATUS_INPUT_RESET
             connector.close()
             return
             
-        sleep(1)
-        groups = get_score_all(connector)
-        for group in groups:
-            print(group.group_name + ":" + str(group.score))
-        connector.commit()
-        connector.close()
+        sleep(2)
+        disp.lcd_string1("Thank you!!")
         print("投票ありがとうございました")
+        sleep(2)
         status = STATUS_NORMAL
-        return
-        
-    if channel == GPIO_START:
-        status = STATUS_INPUT_SCORE
-        print("投票してください")
+        groups = get_score_all(connector)
+        show_score(groups)
+    elif status == STATUS_NORMAL:
+        if channel == GPIO_START:
+            status = STATUS_INPUT_SCORE
+            disp.lcd_string1("Input button!!")
+            print("投票してください")
+    connector.close()
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_A, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
@@ -153,11 +178,11 @@ GPIO.setup(GPIO_B, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 GPIO.setup(GPIO_C, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 GPIO.setup(GPIO_D, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 GPIO.setup(GPIO_START, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-GPIO.add_event_detect(GPIO_A, GPIO.BOTH, callback=my_callback, bouncetime=200)
-GPIO.add_event_detect(GPIO_B, GPIO.BOTH, callback=my_callback, bouncetime=200)
-GPIO.add_event_detect(GPIO_C, GPIO.BOTH, callback=my_callback, bouncetime=200)
-GPIO.add_event_detect(GPIO_D, GPIO.BOTH, callback=my_callback, bouncetime=200)
-GPIO.add_event_detect(GPIO_START, GPIO.BOTH, callback=my_callback, bouncetime=200)
+GPIO.add_event_detect(GPIO_A, GPIO.FALLING, callback=my_callback, bouncetime=500)
+GPIO.add_event_detect(GPIO_B, GPIO.FALLING, callback=my_callback, bouncetime=500)
+GPIO.add_event_detect(GPIO_C, GPIO.FALLING, callback=my_callback, bouncetime=500)
+GPIO.add_event_detect(GPIO_D, GPIO.FALLING, callback=my_callback, bouncetime=500)
+GPIO.add_event_detect(GPIO_START, GPIO.FALLING, callback=my_callback, bouncetime=500)
 
 try:
     while True:
@@ -165,5 +190,7 @@ try:
         
 except KeyboardInterrupt:
     pass
+finally:
+    disp.end_display()
+    GPIO.cleanup()
 
-GPIO.cleanup()

@@ -1,0 +1,7 @@
+モーションセンサーによる監視を行う。
+LINE連携やMQTTを除いたインターネットを経由しないセンサー監視と音声出力版。
+camera_modeの値でカメラ撮影有無を設定可能。
+CAMERA_MODE_ON：撮影あり
+CAMERA_MODE_ON：撮影なし
+new_sensor.pyを実行すれば監視が開始される。
+
