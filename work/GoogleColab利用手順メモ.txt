@@ -1,0 +1,65 @@
+■目的
+Google Colabを使用した画像認識
+一からの学習モデル作成ではなくFine-Tuning
+※ラズパイは関係ないが、学習モデル作成時に便利
+
+■参考ページ
+画像認識（Fine-Tuning）：
+https://qiita.com/tshimba/items/60f7bcc8ae26b5004a3a
+http://aidiary.hatenablog.com/entry/20170131/1485864665
+
+GoogleColab：
+https://qiita.com/yoshizaki_kkgk/items/bf01842d1a80c0f9e56c
+
+■Colab初期設定
+GoogleアカウントにログインしGoogle Colabにアクセス
+新規ノートブックの作成
+編集→ノートブックの設定→ハードウェアアクセラレータを「GPU」に変更
+
+■プロジェクトコピー
+!git clone https://github.com/deer-dslab/keras-example.git
+
+■学習用データダウンロード
+http://www.robots.ox.ac.uk/~vgg/data/flowers/17/
+「Dataset images」から17flowers.tgzをダウンロード
+解凍して中身を改めてzip化（tgzではColab上でうまく解凍できなかった）
+
+■学習用データアップロード
+from google.colab import files
+uploaded = files.upload()
+→17flowers.zipを選択しアップロード（10分程度）
+※Googleドライブ上のデータをダウンロードすることも可能
+https://colab.research.google.com/notebooks/io.ipynb#scrollTo=KHeruhacFpSU
+
+■学習用データ解凍～配置
+!unzip 17flowers.zip
+mv jpg /content/keras-example/fine-tuning/dataset
+!rm 17flowers.zip
+cd keras-example/fine-tuning
+!python setup.py
+
+■学習（Fine-Tuning）
+python fine-tuning.py
+→CPUだと2日かかると書いてあるが、これなら1時間程度
+
+■結果確認用ファイルアップロード
+cd keras-example/fine-tuning
+from google.colab import files
+uploaded = files.upload()
+→predict.pyの"～sample.h5"を"～.h5"に変えたpredict2.pyをアップロード
+
+■結果確認
+python predict2.py dataset/test_images/Tulip/image_0003.jpg
+→('Tulip', 0.9945815)
+99%チューリップとの判定。
+実際はスイセンの画像だが、スイセンが"Tulip"のラベルで学習されている。
+
+■学習後のモデルのダウンロード
+from google.colab import files
+files.download('finetuning.h5')
+
+■ちなみにColab上での画像表示
+from IPython.display import Image,display_jpeg
+display_jpeg(Image('/content/keras-example/fine-tuning/dataset/test_images/Tulip/image_0003.jpg'))
+
+
