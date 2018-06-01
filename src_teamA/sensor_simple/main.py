@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 import time
 import datetime
 import pygame.mixer
-#import my_camera
+import my_camera
 from datetime import datetime
 
 #時間定義
